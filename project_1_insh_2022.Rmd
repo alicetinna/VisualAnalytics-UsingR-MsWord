@@ -1,0 +1,121 @@
+---
+title: "INSH5302_Project_1"
+author: "Alice_Tinna"
+date: "2022-07-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+fav_activity <- data.frame(row.names = c("Morning","After-noon","Evening"),
+                        Greeting_Dog=c(10,5,8),
+                        Sunrise=c(7,0,0),
+                        Tea=c(8,4,09),
+                        Walk=c(8,3,9),
+                        Reading=c(9,6,2),
+```
+
+
+```{r}
+Writing=c(2,9,5),
+                        Sleeping=c(1,0,9),
+                        Music=c(9,2,7)
+                        )
+fav_activity
+```
+```{r}
+install.packages("fmsb")
+library(fmsb)
+```
+```{r}
+#defining the ranges
+max_min <- data.frame(Greeting_Dog=c(10,0),
+                        Sunrise=c(10,0),
+                        Tea=c(10,0),
+                        Walk=c(10,0),
+                        Reading=c(10,0),
+                        Writing=c(10,0),
+                        Sleeping=c(10,0),
+                        Music=c(10,0)
+                      )
+rownames(max_min)<- c("Max","Min")
+
+#Bind the variable ranges to the fav_activities
+df <- rbind(max_min, fav_activity)
+df
+```
+```{r}
+#basic radar plot
+library(fmsb)
+morning_activity <- df[c("Max","Min","Morning"),]
+radarchart(morning_activity)
+```
+
+
+```{r}
+#customizing the radar chart
+my_radarchart <- function(data, color = "#00AFBB", 
+                                        vlabels = colnames(data), vlcex = 0.7,
+                                        caxislabels = NULL, title = NULL, ...){
+  radarchart(
+    data, axistype = 1,
+    # Customize the polygon
+    pcol = color, pfcol = scales::alpha(color, 0.5), plwd = 2, plty = 1,
+    # Customize the grid
+    cglcol = "grey", cglty = 1, cglwd = 0.6,
+    # Customize the axis
+    axislabcol = "grey", 
+    # Variable labels
+    vlcex = vlcex, vlabels = vlabels,
+    caxislabels = caxislabels, title = title, ...
+  )
+}
+```
+
+
+```{r}
+# Reduce plot margin using par()
+op <- par(mar = c(1, 2, 2, 1))
+my_radarchart(morning_activity, caxislabels = c(0,3,5,7,10))
+par(op)
+```
+
+```{r}
+# Reduce plot margin using par()
+op <- par(mar = c(1, 2, 2, 2))
+# Create the radar charts
+my_radarchart(
+  data = df, caxislabels = c(0, 3, 5, 7, 10),
+  color = c("mediumorchid1", "seagreen", "deeppink")
+)
+# Add an horizontal legend
+legend(
+  x = "topright", legend = rownames(df[-c(1,2),]), horiz = TRUE,
+  bty = "n", pch = 20 , col = c("mediumorchid1", "seagreen", "deeppink"),
+  text.col = "grey25", cex = 0.5, pt.cex = 2
+  )
+par(op)
+```
+```{r}
+# Define colors and titles
+colors <- c("mediumorchid1", "seagreen", "deeppink")
+titles <- c("Morning", "AfterNoon", "Evening")
+
+# Reduce plot margin using par()
+# Split the screen in 3 parts
+op <- par(mar = c(1, 1, 1, 1))
+par(mfrow = c(1,3))
+
+# Create the radar chart
+for(i in 1:3){
+  my_radarchart(
+    data = df[c(1, 2, i+2), ], caxislabels = c(0, 3,5,7,10),
+    color = colors[i], title = titles[i]
+    )
+}
+par(op)
+```
+
